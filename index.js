@@ -2,9 +2,10 @@ require("dotenv").config();
 const configuration = require("./configuration");
 const compression = require("compression");
 const express = require("express");
-const app = express();
 const cors = require("cors");
+const axios = require("axios");
 
+const app = express();
 app.use(cors(configuration.corsOptions));
 app.use(compression());
 
@@ -22,16 +23,17 @@ app.get("/api/versions/:packageName", async (req, res) => {
   const { packageName } = req.params;
 
   const filterByData = _ => _.data;
-  const filterByVersion = _ => _.version;
-  const extractVersions = _ => Object.values(_ => _.map(_ => _.version));
-  const getVersions = axios
+  const filterByVersion = _ => _.versions;
+  const extractVersions = versions =>
+    Object.values(versions).map(_ => _.version);
+  const versions = await axios
     .get(`https://registry.npmjs.org/${packageName}`)
     .then(filterByData)
     .then(filterByVersion)
     .then(extractVersions)
-    .catch(err => console.log(`getVersions`, err));
+    .catch(err => console.log(`versions`, err));
 
-  res.send(getVersions);
+  res.json(versions);
 });
 
 app.listen(configuration.PORT, () =>
