@@ -55,6 +55,7 @@ const getFilesFromTarballUrl = async tarballUrl => {
 };
 
 const getFiles = async package => {
+  let files = [];
   /**
    * 1. Get "files" list
    *    if "browser" field exist, add it to list of files to return
@@ -68,7 +69,12 @@ const getFiles = async package => {
   // https://docs.npmjs.com/files/package.json#browser
   // e.g) https://registry.npmjs.org/styled-components/3.4.5
   if (package.browser) {
-    files = Object.values(package.browser);
+    // Sometimes `package.browser` contains a list of object, else just one file
+    // case "object": https://registry.npmjs.org/styled-components/3.4.5
+    // case "string": https://registry.npmjs.org/zone.js/0.8.26
+    if (typeof package.browser === "object")
+      files = Object.values(package.browser);
+    else if (typeof package.browser === "string") files = [package.browser];
   }
   // https://docs.npmjs.com/files/package.json#bundleddependencies
   else if (package.dist && package.dist.tarball) {
