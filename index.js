@@ -9,6 +9,7 @@ const gunzip = require("gunzip-maybe");
 
 const app = express();
 app.use(cors(configuration.corsOptions));
+app.use(express.static("public"));
 app.use(compression());
 
 const filterByData = _ => _.data;
