@@ -17,7 +17,7 @@ const filterByData = _ => _.data;
 const sendErrorResponse = (res, e) =>
   res.status(400).send(`Error while getting Group and Event details = ${e}`);
 
-const ignoredDirectoryPattern = /^.+\/(src|lib|test|tests)\/.*/gi;
+const ignoredDirectoryPattern = /^.+\/(src|test|tests)\/.*/gi;
 // Michael Jackson's unpkg source
 // https://github.com/unpkg/unpkg.com/blob/21ed6ee42e298b7eb640ed35912e9c0355c1270d/modules/middleware/findFile.js#L29
 // Turns 'package/dist/jquery.js into 'dist/jquery.js
