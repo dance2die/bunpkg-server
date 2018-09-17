@@ -22,7 +22,7 @@ const ignoredDirectoryPattern = /^.+\/(src|test|tests)\/.*/gi;
 // https://github.com/unpkg/unpkg.com/blob/21ed6ee42e298b7eb640ed35912e9c0355c1270d/modules/middleware/findFile.js#L29
 // Turns 'package/dist/jquery.js into 'dist/jquery.js
 const leadingSegmentPattern = /^[^/]+\/?/gi;
-const includedFilePattern = /\.(js|map)$/gi;
+const includedFilePattern = /\.(js|map|css)$/gi;
 
 const getFilesFromTarballUrl = async tarballUrl => {
   const response = await axios({
