@@ -98,6 +98,18 @@ const getMeta = package => {
   return { name, version, description, homepage, repository };
 };
 
+const isScopedPakcge = packageName => packageName.charAt(0) === "@";
+
+const getRegistryURI = (packageName, version) => {
+  // NPMJS Registry does NOT allow Scoped packages with version info...
+  return isScopedPakcge(packageName)
+    ? `https://registry.npmjs.org/${packageName}`
+    : `https://registry.npmjs.org/${packageName}/${version}`;
+};
+
+const extractByVersion = (data, packageName, version) =>
+  isScopedPakcge(packageName) ? data.versions[version] : data;
+
 // optional version???
 // Nah, maybe later. May not need it at all so let me optimize later...
 // app.get("/api/info/:packageName/:version?", async (req, res, next) => {
@@ -106,8 +118,9 @@ app.get("/api/info/:packageName/:version", async (req, res) => {
 
   try {
     const package = await axios
-      .get(`https://registry.npmjs.org/${packageName}/${version}`)
-      .then(filterByData);
+      .get(getRegistryURI(packageName, version))
+      .then(filterByData)
+      .then(data => extractByVersion(data, packageName, version));
 
     const files = await getFiles(package);
     const meta = getMeta(package);
